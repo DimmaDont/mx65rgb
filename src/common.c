@@ -93,10 +93,10 @@ void get_rgbwa_leds(FILE **led_files)
     led_files[2] = fopen(leds[2], "w");
 
     led_files[3] = fopen(leds[3], "w"); // max 1
-    led_files[4] = fopen(leds[4], "w");  // max 1
+    led_files[4] = fopen(leds[4], "w"); // max 1
 }
 
-void set_rgb(FILE **leds, int values[])
+void set_rgb(FILE **led_files, int values[])
 {
 #ifdef DEBUG
     printf("\x1b[38;2;");
@@ -107,8 +107,8 @@ void set_rgb(FILE **leds, int values[])
     {
         char *value;
         asprintf(&value, "%d", values[j]);
-        fwrite(value, 1, strlen(value), leds[j]);
-        fflush(leds[j]);
+        fwrite(value, 1, strlen(value), led_files[j]);
+        fflush(led_files[j]);
 #ifdef DEBUG
         if (j < 2)
             printf("%s;", value);
@@ -127,6 +127,18 @@ void set_rgb(FILE **leds, int values[])
     free(v[1]);
     free(v[2]);
 #endif
+}
+
+void set_rgbwa(FILE **led_files, int values[])
+{
+    for (int j = 0; j < 5; j++)
+    {
+        char *value;
+        asprintf(&value, "%d", values[j]);
+        fwrite(value, 1, strlen(value), led_files[j]);
+        fflush(led_files[j]);
+        free(value);
+    }
 }
 
 void set_rgbwa_char(FILE **led_files, char *values[])
