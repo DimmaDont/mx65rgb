@@ -55,9 +55,6 @@ int main()
     };
 #endif
 
-    // Initialize
-    set_rgb(led_files, (int[]){0, 0, 0});
-
     while (!sig_received)
     {
         // 2pi, 6.28 divided by 0.04 = 157 steps

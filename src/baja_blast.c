@@ -43,9 +43,6 @@ int main()
     FILE *led_files[3];
     get_rgb_leds(led_files);
 
-    // Initialize
-    set_rgb(led_files, (int[]){0, 0, 0});
-
     while (!sig_received)
     {
         for (int i = 0; i < COLOR_COUNT; i++)
