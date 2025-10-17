@@ -6,7 +6,7 @@
 
 #define msleep(t) usleep(t * 1000)
 
-#define DELAY_MS 250
+#define DELAY_MS 80
 
 volatile sig_atomic_t sig_received = false;
 
