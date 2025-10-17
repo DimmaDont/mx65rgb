@@ -1,0 +1,44 @@
+name: Make
+
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      attestations: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install Dependencies
+        run: sudo apt-get install gcc-arm-linux-gnueabi make
+      - name: Make
+        run: make
+      - name: Draft Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: bin/rgb
+          tag_name: ${{ inputs.tag_name }}
+          draft: true
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: bin
+      - name: Attest
+        id: attest
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: bin
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag_name }}
+          draft: false
