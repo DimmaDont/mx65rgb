@@ -53,19 +53,17 @@ int check_max_brightness()
 
 void get_rgb_leds(FILE **led_files)
 {
+    char *leds[] = {
 #ifdef MOCK
-    char *leds[] = {
         "/dev/null",
         "/dev/null",
         "/dev/null",
-    };
 #else
-    char *leds[] = {
         "/sys/class/leds/red:indicator/brightness",
         "/sys/class/leds/green:power/brightness",
         "/sys/class/leds/blue:indicator/brightness",
-    };
 #endif
+    };
 
     led_files[0] = fopen(leds[0], "w");
     led_files[1] = fopen(leds[1], "w");
@@ -74,12 +72,28 @@ void get_rgb_leds(FILE **led_files)
 
 void get_rgbwa_leds(FILE **led_files)
 {
-    led_files[0] = fopen("/sys/class/leds/red:indicator/brightness", "w");
-    led_files[1] = fopen("/sys/class/leds/green:power/brightness", "w");
-    led_files[2] = fopen("/sys/class/leds/blue:indicator/brightness", "w");
+    char *leds[] = {
+#ifdef MOCK
+        "/dev/null",
+        "/dev/null",
+        "/dev/null",
+        "/dev/null",
+        "/dev/null",
+#else
+        "/sys/class/leds/red:indicator/brightness",
+        "/sys/class/leds/green:power/brightness",
+        "/sys/class/leds/blue:indicator/brightness",
+        "/sys/class/leds/white:status/brightness",
+        "/sys/class/leds/amber:fault/brightness",
+#endif
+    };
 
-    led_files[3] = fopen("/sys/class/leds/white:status/brightness", "w"); // max 1
-    led_files[4] = fopen("/sys/class/leds/amber:fault/brightness", "w");  // max 1
+    led_files[0] = fopen(leds[0], "w");
+    led_files[1] = fopen(leds[1], "w");
+    led_files[2] = fopen(leds[2], "w");
+
+    led_files[3] = fopen(leds[3], "w"); // max 1
+    led_files[4] = fopen(leds[4], "w");  // max 1
 }
 
 void set_rgb(FILE **leds, int values[])
