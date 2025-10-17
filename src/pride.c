@@ -8,15 +8,13 @@
 #define COLOR_COUNT 6
 #define DELAY_MS 1000
 
-// TODO use the amber LED for orange
-
-int COLORS[COLOR_COUNT][3] = {
-    {229, 0, 0},   // red
-    {255, 127, 0}, // orange
-    {255, 238, 0}, // yellow
-    {2, 191, 33},  // green
-    {0, 76, 255},  // blue
-    {119, 0, 136}, // purple
+int COLORS[COLOR_COUNT][5] = {
+    {229, 0, 0, 0, 0},   // red
+    {0, 0, 0, 0, 1},     // orange
+    {255, 255, 0, 0, 0}, // yellow
+    {2, 191, 33, 0, 0},  // green
+    {0, 76, 255, 0, 0},  // blue
+    {119, 0, 136, 0, 0}, // purple
 };
 
 volatile sig_atomic_t sig_received = false;
@@ -34,15 +32,15 @@ int main()
     if (check_max_brightness())
         return 1;
 
-    FILE *led_files[3];
-    get_rgb_leds(led_files);
+    FILE *led_files[5];
+    get_rgbwa_leds(led_files);
 
     while (!sig_received)
     {
         for (int i = 0; i < COLOR_COUNT; i++)
         {
-            int *rgb = COLORS[i];
-            set_rgb(led_files, rgb);
+            int *rgbwa = COLORS[i];
+            set_rgbwa(led_files, rgbwa);
             msleep(DELAY_MS);
         }
 #ifdef DEBUG
@@ -52,11 +50,13 @@ int main()
     }
 
     // Reset to green
-    set_rgb(led_files, (int[]){0, 255, 0});
+    set_rgbwa(led_files, (int[]){0, 255, 0, 0, 0});
 
     fclose(led_files[0]);
     fclose(led_files[1]);
     fclose(led_files[2]);
+    fclose(led_files[3]);
+    fclose(led_files[4]);
 
     return 0;
 }

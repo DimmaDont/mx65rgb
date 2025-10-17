@@ -44,9 +44,6 @@ int check_max_brightness()
         {
             return 1;
         }
-
-        // TODO The amber and white LEDs can also be used,
-        // though on some units the white LED may not be very bright.
     }
     return 0;
 }
