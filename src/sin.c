@@ -31,29 +31,11 @@ int main()
     signal(SIGINT, sigHandler);
     signal(SIGTERM, sigHandler);
 
-#ifdef MOCK
-    FILE *led_files[] = {
-        fopen("/dev/null", "w"),
-        fopen("/dev/null", "w"),
-        fopen("/dev/null", "w"),
-    };
-#else
     if (check_max_brightness())
         return 1;
 
-    char *leds[] = {
-        "/sys/class/leds/red:indicator/brightness",
-        "/sys/class/leds/green:power/brightness",
-        "/sys/class/leds/blue:indicator/brightness",
-
-    };
-
-    FILE *led_files[] = {
-        fopen(leds[0], "w"),
-        fopen(leds[1], "w"),
-        fopen(leds[2], "w"),
-    };
-#endif
+    FILE *led_files[3];
+    get_rgb_leds(led_files);
 
     while (!sig_received)
     {
