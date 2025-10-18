@@ -1,5 +1,25 @@
 # RGB utility for Meraki MX65
 
+### `mx65rgb_set`
+* cli utility for setting rgbwa values
+
+### `mx65rgb_rainbow`
+* rainbow
+* 250ms (1/8s) per color, 4.5s cycle
+
+### `mx65rgb_pride`
+* pride colors
+* 1s per color, 6s cycle
+
+### `mx65rgb_baja_blast`
+* thin baja blast line
+* 1s per color, 12s cycle
+
+### `mx65rgb_sin`
+* also rainbow. more cpu intensive
+* 80ms (0.08s) per color, ~12.5s cycle
+
+
 ## Usage
 
 ### OpenWrt
