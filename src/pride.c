@@ -1,7 +1,8 @@
 #include <signal.h>
+#include <stdbool.h>
 #include <unistd.h>
 
-#include "common.c"
+#include "common.h"
 
 #define msleep(t) usleep(t * 1000)
 
