@@ -26,12 +26,8 @@ debug: CCFLAGS += -DDEBUG
 debug: bin set sin rainbow
 
 wow: CC = gcc
-wow: CCFLAGS = -DMOCK
+wow: CCFLAGS = -DMOCK -DDEBUG
 wow: bin set sin rainbow
-
-wowd: CC = gcc
-wowd: CCFLAGS = -DMOCK -DDEBUG
-wowd: bin set sin rainbow
 
 clean:
 	rm -f bin/*
