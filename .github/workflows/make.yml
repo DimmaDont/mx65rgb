@@ -18,6 +18,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Skip man-db triggers
+        run: |
+          echo "set man-db/auto-update false" | sudo debconf-communicate
+          sudo dpkg-reconfigure man-db
       - name: Install Dependencies
         run: sudo apt-get install gcc-arm-linux-gnueabi make
       - name: Make
