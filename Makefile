@@ -1,5 +1,5 @@
 CC = arm-linux-gnueabi-gcc
-CCFLAGS = --static -march=armv7-a -mtune=cortex-a9
+CCFLAGS = --static -march=armv7-a -mtune=cortex-a9 -O3
 
 all: bin set sin rainbow pride baja_blast
 
