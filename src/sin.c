@@ -21,9 +21,9 @@ void rainbow(int *buf, float i)
     // +1 to range 0 to 2
     // * 128 to range 0 to 256
     // floor() to 0 to 255
-    buf[0] = (int)floor(128 * (sin(i) + 1));
-    buf[1] = (int)floor(128 * (sin(i + 2.0944) + 1)); // 2pi/3
-    buf[2] = (int)floor(128 * (sin(i + 4.1888) + 1)); // 4pi/3
+    buf[0] = (int)floor(128 * (1 + sin(i)));
+    buf[1] = (int)floor(128 * (1 + sin(i + 2.0944))); // 2pi/3
+    buf[2] = (int)floor(128 * (1 + sin(i + 4.1888))); // 4pi/3
 }
 
 int main()
