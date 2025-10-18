@@ -6,6 +6,9 @@ on:
       tag_name:
         required: true
         type: string
+      release:
+        required: true
+        type: boolean
 
 jobs:
   build:
@@ -39,10 +42,12 @@ jobs:
       - name: Attest
         id: attest
         uses: actions/attest-build-provenance@v3
+        if: ${{ inputs.release }}
         with:
           subject-path: bin
       - name: Publish Release
         uses: softprops/action-gh-release@v2
+        if: ${{ inputs.release }}
         with:
           tag_name: ${{ inputs.tag_name }}
           draft: false

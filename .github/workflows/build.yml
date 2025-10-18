@@ -7,6 +7,11 @@ on:
         description: 'Tag'
         required: true
         type: string
+      release:
+        description: 'Release'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -18,3 +23,4 @@ jobs:
     uses: ./.github/workflows/make.yml
     with:
       tag_name: ${{ inputs.tag_name }}
+      release: ${{ inputs.release }}
