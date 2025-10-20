@@ -7,7 +7,10 @@
 
 #define msleep(t) usleep(t * 1000)
 
+#define COLOR_COUNT 156
 #define DELAY_MS 80
+
+int COLORS[COLOR_COUNT][3];
 
 volatile sig_atomic_t sig_received = false;
 
@@ -35,18 +38,25 @@ int main()
     if (check_max_brightness())
         return 1;
 
+    // 2pi, 6.28 divided by 0.04 = 157 steps
+    // subtract a step so it doesn't overlap
+    for (int i = 0; i < COLOR_COUNT; i++)
+    {
+        int rgb[3] = {0, 0, 0};
+        rainbow(rgb, (float)i * 0.04);
+        COLORS[i][0] = rgb[0];
+        COLORS[i][1] = rgb[1];
+        COLORS[i][2] = rgb[2];
+    }
+
     FILE *led_files[3];
     get_rgb_leds(led_files);
 
     while (!sig_received)
     {
-        // 2pi, 6.28 divided by 0.04 = 157 steps
-        // subtract a step so it doesn't overlap
-        for (float i = 0; i < 6.24; i += 0.04)
+        for (int i = 0; i < COLOR_COUNT; i++)
         {
-            int rgb[3] = {0, 0, 0};
-            rainbow(rgb, i);
-            set_rgb(led_files, rgb);
+            set_rgb(led_files, COLORS[i]);
             msleep(DELAY_MS);
         }
 #ifdef DEBUG
