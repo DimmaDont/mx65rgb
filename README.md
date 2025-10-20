@@ -5,7 +5,7 @@
 
 ### `mx65rgb_rainbow`
 * rainbow
-* 250ms (1/8s) per color, 4.5s cycle
+* 125ms per color (8fps), 4.5s cycle
 
 ### `mx65rgb_pride`
 * pride colors
