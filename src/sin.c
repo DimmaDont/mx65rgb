@@ -2,6 +2,7 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "common.h"
 
@@ -32,6 +33,8 @@ int main()
 {
     signal(SIGINT, sigHandler);
     signal(SIGTERM, sigHandler);
+
+    nice(19);
 
     if (check_max_brightness())
         return 1;
