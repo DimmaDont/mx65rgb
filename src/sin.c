@@ -7,6 +7,9 @@
 
 #include "common.h"
 
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+
 volatile sig_atomic_t sig_received = false;
 
 void sigHandler(int sig_num)
@@ -14,15 +17,15 @@ void sigHandler(int sig_num)
     sig_received = true;
 }
 
-void rainbow(int *buf, float i)
+void rainbow(int *buf, float i, float brightness)
 {
     // sin(x) range -1 to 1
     // +1 to range 0 to 2
     // * 128 to range 0 to 256
     // floor() to 0 to 255
-    buf[0] = (int)floor(128 * (1 + sin(i)));
-    buf[1] = (int)floor(128 * (1 + sin(i + M_PI * 2 / 3)));
-    buf[2] = (int)floor(128 * (1 + sin(i + M_PI * 4 / 3)));
+    buf[0] = (int)floor(128 * brightness * (1 + sin(i)));
+    buf[1] = (int)floor(128 * brightness * (1 + sin(i + M_PI * 2 / 3)));
+    buf[2] = (int)floor(128 * brightness * (1 + sin(i + M_PI * 4 / 3)));
 }
 
 int main(int argc, char *argv[])
@@ -35,22 +38,27 @@ int main(int argc, char *argv[])
     if (check_max_brightness())
         return 1;
 
-    int color_count;
-    int delay_ms;
+    int color_count = 50;
+    int delay_ms = 200;
+    float brightness = 1.0;
 
     if (argc == 1)
     {
-        delay_ms = 200;
-        color_count = 50;
     }
     else if (argc == 3)
     {
         delay_ms = atoi(argv[1]);
         color_count = atoi(argv[2]);
     }
+    else if (argc == 4)
+    {
+        delay_ms = atoi(argv[1]);
+        color_count = atoi(argv[2]);
+        brightness = max(0, min(1.0, atoi(argv[3]) / 100.0));
+    }
     else
     {
-        printf("Usage: %s [<delay ms> <number of colors>]\n", argv[0]);
+        printf("Usage: %s [<delay ms> <number of colors>] [<brightness 0-100>]\n", argv[0]);
         return 0;
     }
 
@@ -62,7 +70,7 @@ int main(int argc, char *argv[])
     for (int i = 0; i < color_count; i++)
     {
         int rgb[3] = {0, 0, 0};
-        rainbow(rgb, (float)i * step);
+        rainbow(rgb, (float)i * step, brightness);
         COLORS[i][0] = rgb[0];
         COLORS[i][1] = rgb[1];
         COLORS[i][2] = rgb[2];
