@@ -1,6 +1,8 @@
+#include <getopt.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
 
 #include "common.h"
 
@@ -23,13 +25,47 @@ void sigHandler(int sig_num)
     sig_received = true;
 }
 
-int main()
+static struct option long_options[] = {
+    // {"verbose", no_argument, 0, 'v'},
+    {"daemonize", no_argument, NULL, 'd'},
+    {"help", no_argument, NULL, 'h'},
+    {NULL, 0, NULL, 0},
+};
+
+void printHelp(char *argv0)
+{
+    printf("Usage: %s [-d]\n", argv0);
+}
+
+int main(int argc, char *argv[])
 {
     signal(SIGINT, sigHandler);
     signal(SIGTERM, sigHandler);
 
     if (check_max_brightness())
         return 1;
+
+    int daemonize = 0;
+
+    int opt;
+    while ((opt = getopt_long(argc, argv, "dh", long_options, NULL)) != -1)
+    {
+        switch (opt)
+        {
+        case 'd':
+            daemonize = 1;
+            break;
+        case 'h':
+            printHelp(argv[0]);
+            return 0;
+        default:
+            printHelp(argv[0]);
+            return 1;
+        }
+    }
+
+    if (daemonize)
+        daemon(1, 0);
 
     FILE *led_files[5];
     get_rgbwa_leds(led_files);

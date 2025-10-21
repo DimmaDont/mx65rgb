@@ -24,7 +24,7 @@
 ### OpenWrt
 
 1. Download a binary from releases to `/sbin`.
-2. Add `/sbin/mx65rgb_<tool> &` to `/etc/rc.local`.
+2. Add `/sbin/mx65rgb_<tool> -d <options>` to `/etc/rc.local`.
 3. Start it with the same command, or reboot.
 
 ## Building
