@@ -16,7 +16,7 @@
 * 1s per color, 12s cycle
 
 ### `mx65rgb_sin`
-* also rainbow but vaguely more customizable
+* also rainbow but hpluv. chroma changes too sharply with hsluv, and colors are too pastel'y with hpluv
 * defaults to 200ms per color , 10s cycle
 
 ## Usage

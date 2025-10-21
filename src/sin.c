@@ -5,6 +5,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include "hsluv-c/src/hsluv.h"
+
 #include "common.h"
 
 #define min(a, b) (((a) < (b)) ? (a) : (b))
@@ -19,13 +21,11 @@ void sigHandler(int sig_num)
 
 void rainbow(int *buf, float i, float brightness)
 {
-    // sin(x) range -1 to 1
-    // +1 to range 0 to 2
-    // * 128 to range 0 to 256
-    // floor() to 0 to 255
-    buf[0] = (int)floor(128 * brightness * (1 + sin(i)));
-    buf[1] = (int)floor(128 * brightness * (1 + sin(i + M_PI * 2 / 3)));
-    buf[2] = (int)floor(128 * brightness * (1 + sin(i + M_PI * 4 / 3)));
+    double fbuf[3];
+    hpluv2rgb(i, 100.0, brightness, &fbuf[0], &fbuf[1], &fbuf[2]);
+    buf[0] = (int)floor(fbuf[0] * 255 );
+    buf[1] = (int)floor(fbuf[1] * 255 );
+    buf[2] = (int)floor(fbuf[2] * 255 );
 }
 
 int main(int argc, char *argv[])
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
 
     int color_count = 50;
     int delay_ms = 200;
-    float brightness = 1.0;
+    float brightness = 50.0;
 
     if (argc == 1)
     {
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     {
         delay_ms = atoi(argv[1]);
         color_count = atoi(argv[2]);
-        brightness = max(0, min(1.0, atoi(argv[3]) / 100.0));
+        brightness = max(0, min(100.0, atoi(argv[3])));
     }
     else
     {
@@ -64,9 +64,7 @@ int main(int argc, char *argv[])
 
     int COLORS[color_count][3];
 
-    // period is 2pi
-    float step = 2 * M_PI / color_count;
-
+    float step = 360.0 / color_count;
     for (int i = 0; i < color_count; i++)
     {
         int rgb[3] = {0, 0, 0};
