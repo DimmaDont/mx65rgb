@@ -1,11 +1,9 @@
 #include <math.h>
 #include <signal.h>
 #include <stdbool.h>
-#include <unistd.h>
+#include <time.h>
 
 #include "common.h"
-
-#define msleep(t) usleep(t * 1000)
 
 #define COLOR_COUNT 156
 #define DELAY_MS 80
@@ -52,12 +50,17 @@ int main()
     FILE *led_files[3];
     get_rgb_leds(led_files);
 
+    struct timespec ts;
+    ts.tv_sec = DELAY_MS / 1000;
+    ts.tv_nsec = (DELAY_MS % 1000) * 1000000;
+
     while (!sig_received)
     {
         for (int i = 0; i < COLOR_COUNT; i++)
         {
             set_rgb(led_files, COLORS[i]);
-            msleep(DELAY_MS);
+            if (nanosleep(&ts, NULL) == -1)
+                break;
         }
 #ifdef DEBUG
         printf("loop\n");
