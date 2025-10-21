@@ -31,12 +31,13 @@ void rainbow(int *buf, float i, float brightness)
 
 static struct option long_options[] = {
     // {"verbose", no_argument, 0, 'v'},
+    {"daemonize", no_argument, NULL, 'd'},
     {"help", no_argument, NULL, 'h'},
     {NULL, 0, NULL, 0},
 };
 
 void printHelp(char *argv0) {
-    printf("Usage: %s [<delay ms> <number of colors>] [<brightness 0-100>]\n", argv0);
+    printf("Usage: %s [-d] [<delay ms> <number of colors>] [<brightness 0-100>]\n", argv0);
 }
 
 int main(int argc, char *argv[])
@@ -49,12 +50,16 @@ int main(int argc, char *argv[])
     if (check_max_brightness())
         return 1;
 
+    int daemonize = 0;
 
     int opt;
     while ((opt = getopt_long(argc, argv, "dh", long_options, NULL)) != -1)
     {
         switch (opt)
         {
+        case 'd':
+            daemonize = 1;
+            break;
         case 'h':
             printHelp(argv[0]);
             return 0;
@@ -89,6 +94,9 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    if (daemonize)
+        daemon(1, 0);
 
     int COLORS[color_count][3];
 
