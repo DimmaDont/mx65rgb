@@ -1,3 +1,4 @@
+#include <getopt.h>
 #include <math.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -28,6 +29,16 @@ void rainbow(int *buf, float i, float brightness)
     buf[2] = (int)floor(128 * brightness * (1 + sin(i + M_PI * 4 / 3)));
 }
 
+static struct option long_options[] = {
+    // {"verbose", no_argument, 0, 'v'},
+    {"help", no_argument, NULL, 'h'},
+    {NULL, 0, NULL, 0},
+};
+
+void printHelp(char *argv0) {
+    printf("Usage: %s [<delay ms> <number of colors>] [<brightness 0-100>]\n", argv0);
+}
+
 int main(int argc, char *argv[])
 {
     signal(SIGINT, sigHandler);
@@ -38,28 +49,45 @@ int main(int argc, char *argv[])
     if (check_max_brightness())
         return 1;
 
+
+    int opt;
+    while ((opt = getopt_long(argc, argv, "dh", long_options, NULL)) != -1)
+    {
+        switch (opt)
+        {
+        case 'h':
+            printHelp(argv[0]);
+            return 0;
+        default:
+            printHelp(argv[0]);
+            return 1;
+        }
+    }
+
+    int positionals = argc - optind;
+    if (positionals == 1 || positionals > 3)
+    {
+        printHelp(argv[0]);
+        return 1;
+    }
+
     int color_count = 50;
     int delay_ms = 200;
     float brightness = 1.0;
-
-    if (argc == 1)
+    for (int i = optind; i < argc; i++)
     {
-    }
-    else if (argc == 3)
-    {
-        delay_ms = atoi(argv[1]);
-        color_count = atoi(argv[2]);
-    }
-    else if (argc == 4)
-    {
-        delay_ms = atoi(argv[1]);
-        color_count = atoi(argv[2]);
-        brightness = max(0, min(1.0, atoi(argv[3]) / 100.0));
-    }
-    else
-    {
-        printf("Usage: %s [<delay ms> <number of colors>] [<brightness 0-100>]\n", argv[0]);
-        return 0;
+        switch (i - optind)
+        {
+        case 0:
+            delay_ms = atoi(argv[i]);
+            break;
+        case 1:
+            color_count = atoi(argv[i]);
+            break;
+        case 2:
+            brightness = max(0, min(1.0, atoi(argv[i]) / 100.0));
+            break;
+        }
     }
 
     int COLORS[color_count][3];
