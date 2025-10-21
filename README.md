@@ -16,9 +16,8 @@
 * 1s per color, 12s cycle
 
 ### `mx65rgb_sin`
-* also rainbow but vaguely more customizable. computes color values at startup
-* 80ms (0.08s) per color, ~12.5s cycle
-
+* also rainbow but vaguely more customizable
+* defaults to 200ms per color , 10s cycle
 
 ## Usage
 
