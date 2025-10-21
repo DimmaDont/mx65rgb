@@ -1,0 +1,3 @@
+[submodule "src/hsluv-c"]
+	path = src/hsluv-c
+	url = https://github.com/hsluv/hsluv-c/

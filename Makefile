@@ -10,7 +10,7 @@ set:
 	$(CC) $(CCFLAGS) src/set.c src/common.c -o bin/mx65rgb_set $(LDFLAGS)
 
 sin:
-	$(CC) $(CCFLAGS) src/sin.c src/common.c -o bin/mx65rgb_sin $(LDFLAGS) -lm
+	$(CC) $(CCFLAGS) src/sin.c src/common.c src/hsluv-c/src/hsluv.c -o bin/mx65rgb_sin $(LDFLAGS) -lm
 
 rainbow:
 	$(CC) $(CCFLAGS) src/rainbow.c src/common.c -o bin/mx65rgb_rainbow $(LDFLAGS)
