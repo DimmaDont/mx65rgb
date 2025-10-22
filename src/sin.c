@@ -1,4 +1,4 @@
-#include <getopt.h>
+#include <popt.h>
 #include <math.h>
 #include <signal.h>
 #include <stdbool.h>
@@ -29,18 +29,6 @@ void rainbow(int *buf, float i, float brightness)
     buf[2] = (int)floor(128 * brightness * (1 + sin(i + M_PI * 4 / 3)));
 }
 
-static struct option long_options[] = {
-    // {"verbose", no_argument, 0, 'v'},
-    {"daemonize", no_argument, NULL, 'd'},
-    {"help", no_argument, NULL, 'h'},
-    {NULL, 0, NULL, 0},
-};
-
-void printHelp(char *argv0)
-{
-    printf("Usage: %s [-d|--daemonize] [<delay ms 10-60000> <number of colors 3-5000> [<brightness 1-100>]]\n", argv0);
-}
-
 int main(int argc, char *argv[])
 {
     signal(SIGINT, sigHandler);
@@ -53,48 +41,68 @@ int main(int argc, char *argv[])
 
     int daemonize = 0;
 
-    int opt;
-    while ((opt = getopt_long(argc, argv, "dh", long_options, NULL)) != -1)
+    struct poptOption optionsTable[] = {
+        {"daemon", 'd', POPT_ARG_NONE, &daemonize, 0, "daemonize", NULL},
+        POPT_AUTOHELP
+            POPT_TABLEEND};
+
+    poptContext optCon = poptGetContext(NULL, argc, (const char **)argv, optionsTable, 0);
+    poptSetOtherOptionHelp(optCon, "[OPTION...] [<delay_ms 10-60000> <number_of_colors 1-5000> [<brightness 1-100>]]");
+
+    char opt;
+    while ((opt = poptGetNextOpt(optCon)) >= 0)
     {
         switch (opt)
         {
         case 'd':
-            daemonize = 1;
             break;
-        case 'h':
-            printHelp(argv[0]);
-            return 0;
         default:
-            printHelp(argv[0]);
-            return 1;
+            poptPrintUsage(optCon, stderr, 0);
+            poptFreeContext(optCon);
+            exit(1);
         }
     }
 
-    int positionals = argc - optind;
-    if (positionals == 1 || positionals > 3)
+    if (opt < -1)
     {
-        printHelp(argv[0]);
+        /* an error occurred during option processing */
+        fprintf(stderr, "%s: %s\n",
+                poptBadOption(optCon, POPT_BADOPTION_NOALIAS),
+                poptStrerror(opt));
         return 1;
     }
 
     int color_count = 50;
     int delay_ms = 200;
     float brightness = 1.0;
-    for (int i = optind; i < argc; i++)
+
+    int pos = 0;
+    char *arg;
+    while ((arg = (char *)poptGetArg(optCon)) != NULL)
     {
-        switch (i - optind)
+        switch (pos)
         {
         case 0:
-            delay_ms = max(10, min(60000, atoi(argv[i])));
+            delay_ms = max(10, min(60000, atoi(arg)));
             break;
         case 1:
-            color_count = max(3, min(5000, atoi(argv[i])));
+            color_count = max(3, min(5000, atoi(arg)));
             break;
         case 2:
-            brightness = max(0.01, min(1.0, atoi(argv[i]) / 100.0));
+            brightness = max(0.01, min(1.0, atoi(arg) / 100.0));
             break;
         }
+        pos++;
     }
+
+    if (pos == 1 || pos > 3)
+    {
+        poptPrintUsage(optCon, stderr, 0);
+        poptFreeContext(optCon);
+        exit(1);
+    }
+
+    poptFreeContext(optCon);
 
     if (daemonize)
         daemon(1, 0);

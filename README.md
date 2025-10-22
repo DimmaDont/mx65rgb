@@ -30,7 +30,9 @@
 ## Building
 
 ```
-sudo apt install gcc-arm-linux-gnueabi make
+sudo dpkg --add-architecture armel
+sudo apt update
+sudo apt install gcc-arm-linux-gnueabi make libpopt-dev libpopt-dev:armel
 
 git clone https://github.com/DimmaDont/mx65rgb
 cd mx65rgb
