@@ -21,12 +21,12 @@ void sigHandler(int sig_num)
 void rainbow(int *buf, float i, float brightness)
 {
     // sin(x) range -1 to 1
-    // +1 to range 0 to 2
-    // * 128 to range 0 to 256
+    // abs to range 0 to 1
+    // * 256 to range 0 to 256
     // floor() to 0 to 255
-    buf[0] = (int)floor(128 * brightness * (1 + sin(i)));
-    buf[1] = (int)floor(128 * brightness * (1 + sin(i + M_PI * 2 / 3)));
-    buf[2] = (int)floor(128 * brightness * (1 + sin(i + M_PI * 4 / 3)));
+    buf[0] = (int)floor(256 * brightness * (fabs(sin(i))));
+    buf[1] = (int)floor(256 * brightness * (fabs(sin(i + M_PI * 2 / 3))));
+    buf[2] = (int)floor(256 * brightness * (fabs(sin(i + M_PI * 4 / 3))));
 }
 
 static struct option long_options[] = {
@@ -101,8 +101,8 @@ int main(int argc, char *argv[])
 
     int COLORS[color_count][3];
 
-    // period is 2pi
-    float step = 2 * M_PI / color_count;
+    // period is pi
+    float step = M_PI / color_count;
 
     for (int i = 0; i < color_count; i++)
     {
