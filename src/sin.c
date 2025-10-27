@@ -36,8 +36,9 @@ static struct option long_options[] = {
     {NULL, 0, NULL, 0},
 };
 
-void printHelp(char *argv0) {
-    printf("Usage: %s [-d] [<delay ms> <number of colors>] [<brightness 0-100>]\n", argv0);
+void printHelp(char *argv0)
+{
+    printf("Usage: %s [-d|--daemonize] [<delay ms 10-60000> <number of colors 3-5000> [<brightness 1-100>]]\n", argv0);
 }
 
 int main(int argc, char *argv[])
@@ -84,13 +85,13 @@ int main(int argc, char *argv[])
         switch (i - optind)
         {
         case 0:
-            delay_ms = atoi(argv[i]);
+            delay_ms = max(10, min(60000, atoi(argv[i])));
             break;
         case 1:
-            color_count = atoi(argv[i]);
+            color_count = max(3, min(5000, atoi(argv[i])));
             break;
         case 2:
-            brightness = max(0, min(1.0, atoi(argv[i]) / 100.0));
+            brightness = max(0.01, min(1.0, atoi(argv[i]) / 100.0));
             break;
         }
     }
