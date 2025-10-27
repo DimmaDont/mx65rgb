@@ -48,6 +48,8 @@ int main(int argc, char *argv[])
     signal(SIGINT, sigHandler);
     signal(SIGTERM, sigHandler);
 
+    nice(19);
+
     if (check_max_brightness())
         return 1;
 
