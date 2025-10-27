@@ -40,7 +40,7 @@ static struct option long_options[] = {
 
 void printHelp(char *argv0)
 {
-    printf("Usage: %s [-d]\n", argv0);
+    printf("Usage: %s [-d|--daemonize]\n", argv0);
 }
 
 int main(int argc, char *argv[])
